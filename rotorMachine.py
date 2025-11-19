@@ -126,7 +126,7 @@ def show_rotor_machine():
     messages = ["HOPE", "HELLO", "NEW YEAR"]
     
     print("=" * 75)
-    print("                     ENCRYPTION AND DECRYPTION PROCESS 🔐")
+    print("                     ENCRYPTION AND DECRYPTION PROCESS")
     print("=" * 75)
     print()
     results = []
@@ -146,11 +146,11 @@ def show_rotor_machine():
         print(f"Plain Text: {msg}")
         print(f"  Encrypted: {encrypted}")
         print(f"  Decrypted: {decrypted}")
-        print(f"  Verification: {'✅ SUCCESS' if decrypted == clean_message else '❌ FAILED'}")
+        print(f"  Verification: {'SUCCESS' if decrypted == clean_message else 'FAILED'}")
         print()
     
     print("=" * 75)
-    print("                             OBTAINED RESULTS 📊")
+    print("                             OBTAINED RESULTS")
     print("=" * 75)
     print()
     print(f"{'Plain Text':<20} {'Encrypted Text':<20} {'Decrypted Text':<20}")
@@ -160,7 +160,7 @@ def show_rotor_machine():
     print()
     
     print("=" * 75)
-    print("                         ROTOR STEP DEMONSTRATION ⚙️")
+    print("                         ROTOR STEP DEMONSTRATION")
     print("=" * 75)
     print()
     machine.reset()

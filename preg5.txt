@@ -1,0 +1,31 @@
+Why does DES use 16 Feistel rounds? What happens if fewer rounds are used?
+
+DES needs multiple rounds to achieve:
+
+Diffusion:
+
+Ensures that changing one bit of plaintext modifies many bits of output.
+
+Confusion:
+
+The relationship between key and ciphertext becomes complex.
+
+Why 16 rounds?
+
+Research shows:
+
+- < 8 rounds → easily broken by differential cryptanalysis
+
+- 12 rounds → somewhat secure
+
+- 16 rounds → strong enough for practical use
+
+If fewer rounds were used
+
+- Patterns in input/output become detectable.
+
+- Avalanche effect becomes weak.
+
+- Known-plaintext and chosen-plaintext attacks become feasible.
+
+Thus, 16 rounds provide a strong security margin.

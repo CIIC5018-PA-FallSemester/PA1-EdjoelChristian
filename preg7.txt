@@ -1,0 +1,44 @@
+**********Esta es la tabla 4 que ay que llenar*************
+
+
+
+
+Compare computational performance of Rotor Machine, DES, and Hybrid system
+
+(Fill Table 4)
+
+Computational Complexity
+
+Rotor Machine:
+
+- O(n), simple substitutions & mechanical stepping
+
+- Very lightweight
+
+DES:
+
+- O(16n), due to 16 Feistel rounds
+
+- More operations: permutations, expansions, S-boxes
+
+Hybrid:
+
+- Rotor + DES → O(17n)
+
+- Highest complexity of the three
+
+Computation Time
+
+- Rotor Machine: Fastest
+
+- DES: Moderate
+
+- Hybrid: Slowest because it runs both algorithms
+
+Resource Utilization
+
+- Rotor Machine: Very low (simple arithmetic/lookup)
+
+- DES: Moderate (tables, S-boxes, bit operations)
+
+- Hybrid: Highest (runs both systems consecutively)
