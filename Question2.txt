@@ -1,0 +1,18 @@
+Explain the decryption process in a rotor machine and why it works.
+How decryption works
+
+Rotor machines are designed using reversible electrical/mechanical wiring.
+The decryption process in a rotor machine is inherently ensured by the
+physical structure of the device, primarily the presence of the reflector.
+The machine is built on the principle of reciprocity (or self-inversion).
+When a letter M is encrypted to E, the signal travels through the rotors,
+hits the reflector, and travels back through the rotors in reverse order.
+The reflector's wiring is designed such that if it connects input
+A to output P, it simultaneously connects input P back to output A.
+Because the entire electrical path (rotors -> reflector -> rotors) is reciprocal,
+the decryption process is simply the encryption process performed in reverse using
+the exact same key settings. The decrypting party must set the machine to the same
+initial position as the encipherer, and the rotors will advance in the same synchronized
+sequence for each character. Running the ciphertext E through the machine using
+the identical, synchronized settings simply undoes the substitution work character
+by character, reliably returning the original message M.

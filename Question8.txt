@@ -1,0 +1,58 @@
+Practicality of a hybrid cryptosystem (Rotor + DES)
+
+The specific hybrid model of Rotor Machine + DES is not 
+practical for modern, real-world encryption applications.
+Both components are cryptographically obsolete: the Rotor 
+Machine lacks the necessary mathematical rigor, and DES's 
+56-bit key is far too small, making it vulnerable to rapid 
+brute-force attack. Modern applications would never prioritize 
+this slow and insecure combination when highly efficient and 
+robust algorithms like AES (with 128-bit keys and up) are 
+standard. However, the concept of a hybrid cryptosystem—chaining 
+two or more ciphers—is absolutely essential in modern 
+cryptography. Today, this principle is manifested as the 
+Asymmetric/Symmetric hybrid model used in TLS/SSL: a slow, 
+mathematically complex asymmetric cipher (like RSA or ECC) is 
+used only to securely exchange a fast, temporary symmetric session
+key (like AES), which then encrypts the bulk of the data. 
+This dual-layer approach provides both efficient performance 
+(AES) and secure key establishment (Asymmetric), which is why 
+it forms the basis of secure communication over the internet.
+
+Pros
+
+- Two-layer encryption increases difficulty for attackers.
+
+- Rotor output randomizes plaintext before DES, adding confusion.
+
+- If DES key is ever partially analyzed, the rotor layer still protects messages.
+
+Cons
+
+- Slower — double encryption.
+
+- Rotor machines are not secure by modern cryptographic standards.
+
+- DES itself is outdated due to its short key length (56 bits).
+
+- Combining two weak systems does not reach modern AES-level security.
+
+Possible real-world uses (theoretical/educational)
+
+- Teaching layered cryptography concepts.
+
+- Lightweight encryption on resource-constrained embedded systems.
+
+- Obfuscation of data in simple devices (not for high security).
+
+Not suitable for
+
+- Banking
+
+- Government communication
+
+- Internet security
+
+- Sensitive personal data
+
+Modern systems use AES, RSA, ECC — not DES or mechanical rotor approaches.

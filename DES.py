@@ -1,10 +1,10 @@
-# ===== DES IMPLEMENTATION FOR TASK 2 =====
-# This follows the project requirement to "implement DES" and test it
-# on the messages used in Task 1: "HELLO", "HOPE", "NEW YEAR".
-# You can split this into des_functions.txt and main_des.txt if your
-# professor wants separate files.
+# CIIC 5018-050 - Cryptography and Network Security
+# Project - Hybrid Cryptosystem using Rotor Machine and DES Encryption
+# Part 2: DES Implementation
+# On messages used in Task 1: "HELLO", "HOPE", "NEW YEAR"
+# Authors: Edjoel Colon Nogueras & Christian Medina Diaz
 
-# --- DES tables (standard) ---
+# DES tables (standard)
 IP = [
     58, 50, 42, 34, 26, 18, 10, 2,
     60, 52, 44, 36, 28, 20, 12, 4,
@@ -133,7 +133,7 @@ PC2 = [
 SHIFTS = [1, 1, 2, 2, 2, 2, 2, 2,
            1, 2, 2, 2, 2, 2, 2, 1]
 
-# --- helper functions ---
+# Helper funcs
 def permute(block, table):
     return [block[i-1] for i in table]
 
@@ -212,7 +212,6 @@ def des_block_decrypt(block8: bytes, subkeys):
     final_bits = permute(preoutput, FP)
     return bits_to_bytes(final_bits)
 
-# --- padding so we can encrypt any length ---
 def pad_pkcs5(data: bytes):
     pad_len = 8 - (len(data) % 8)
     return data + bytes([pad_len]) * pad_len
@@ -221,23 +220,22 @@ def unpad_pkcs5(data: bytes):
     pad_len = data[-1]
     return data[:-pad_len]
 
-# ===== main test for Task-2 =====
+# Test for Task 2
 if __name__ == "__main__":
-    # use a fixed DES key (standard example key)
     key = bytes.fromhex("133457799BBCDFF1")
     subkeys = generate_subkeys(key)
 
     messages = ["HOPE", "HELLO", "NEW YEAR"]
 
     for m in messages:
-        # encrypt
+        # Encrypt
         pt_bytes = m.encode("ascii")
         pt_padded = pad_pkcs5(pt_bytes)
         ct = b""
         for i in range(0, len(pt_padded), 8):
             ct += des_block_encrypt(pt_padded[i:i+8], subkeys)
 
-        # decrypt
+        # Decrypt
         recovered = b""
         for i in range(0, len(ct), 8):
             recovered += des_block_decrypt(ct[i:i+8], subkeys)

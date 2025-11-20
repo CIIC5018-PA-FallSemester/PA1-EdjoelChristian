@@ -1,0 +1,17 @@
+Discuss the key schedule in DES. How are the 56-bit keys generated for each round
+of the encryption process? What effect does this have on the strength of the encryption?
+
+The key schedule in DES is the critical procedure that takes the initial 64-bit key and 
+transforms it into the sixteen unique, 48-bit round keys (K1 through K16) needed 
+for the 16 Feistel rounds. The process begins by reducing the 64-bit input to a 56-bit 
+effective key by dropping the 8 parity bits. This 56-bit key is then passed through the 
+Permuted Choice 1 (PC-1), which permutes the bits and splits them into two 28-bit halves, 
+C0 and D0. For each subsequent round, C{i-1} and D{i-1} are independently
+rotated (left-shifted) by either one or two bits, a rotation schedule that ensures a 
+different subset of the 56 key bits is used in every round. The combined 56 bits (CiDi)
+are then subjected to the Permuted Choice 2 (PC-2) permutation, which selects 48 bits to 
+form the final 48-bit round key Ki. This complex scheduling mechanism is vital because 
+it guarantees confusion and diffusion: every round key is different, making the 
+relationship between the final ciphertext and the master key highly non-linear, 
+and ensuring that a change in a single bit of the master key influences many bits in 
+the round keys and, consequently, the entire ciphertext.

@@ -1,6 +1,6 @@
 # CIIC 5018-050 - Cryptography and Network Security
 # Project - Hybrid Cryptosystem using Rotor Machine and DES Encryption
-# Part 1: Rotor Machine
+# Task 1: Rotor Machine
 # Simulation of a 3-rotor cipher machine with encryption and decryption.
 # Authors: Christian Medina Diaz & Edjoel Colon Nogueras
 
@@ -62,33 +62,39 @@ class RotorMachine:
         self.rotor3.set_position(self.initial_positions[2])
     
     def rotate_rotors(self):
-        rotor2_at_notch = (self.rotor2.position == self.rotor2.notch_position)
-        rotor1_at_notch = self.rotor1.rotate()
-        
-        if rotor1_at_notch or rotor2_at_notch:
-            rotor2_at_notch_after = self.rotor2.rotate()
-            
-            if rotor2_at_notch:
-                self.rotor3.rotate()
-    
+        # Rotor 1 (rightmost) always rotates once per character.
+        # If Rotor 1 reaches its notch, Rotor 2 rotates.
+        # If Rotor 2 rotates due to either condition, Rotor 3 rotates.
+        step_r1 = self.rotor1.rotate()
+        step_r2 = False
+
+        if step_r1 or (self.rotor2.position == self.rotor2.notch_position):
+            step_r2 = self.rotor2.rotate()
+
+        if step_r2:
+            self.rotor3.rotate()
+
     def encrypt_char(self, char):
         if not char.isalpha():
             return char
-        
+
         char = char.upper()
-        self.rotate_rotors()        
         char_index = ord(char) - ord('A')
-        
+
         char_index = self.rotor1.encrypt(char_index)
         char_index = self.rotor2.encrypt(char_index)
         char_index = self.rotor3.encrypt(char_index)
-        
+
+        # Mathematical Reflector operation (Reciprocal Encryption)
         char_index = 25 - char_index
-        
+
         char_index = self.rotor3.decrypt(char_index)
         char_index = self.rotor2.decrypt(char_index)
         char_index = self.rotor1.decrypt(char_index)
-        return chr(char_index + ord('A'))
+        output = chr(char_index + ord('A'))
+        self.rotate_rotors()
+
+        return output
     
     def encrypt(self, message):
         self.reset()
@@ -176,23 +182,30 @@ def show_rotor_machine():
     print("                                 EXPLANATION")
     print("=" * 75)
     print("""
-1. Rotor Rotation: Before each character is encrypted, the rightmost rotor
-   (Rotor 1) advances one position. When it completes a full rotation,
-   it triggers the middle rotor to advance, and so on.
+1. Rotor Rotation: Before each character is processed, the rightmost rotor
+   (Rotor 1) advances by one position. The middle and left rotors remain
+   stationary unless the rotor to their right completes a full rotation.
+   (In the examples shown, only Rotor 1 advances.)
 
-2. Encryption Path: Each character passes through all three rotors from
-   right to left, reflects off a 'reflector', then passes back through
-   the rotors from left to right.
+2. Encryption Path: Each character is converted to its corresponding index
+   and passed through all three rotors from right to left. After reaching
+   the reflector, the signal returns back through the rotors from left to
+   right, producing the encrypted output.
 
-3. Reciprocal Property: Due to the reflector and rotor design, encrypting
-   the ciphertext with the same settings produces the original message.
-   This means encryption and decryption use the same process.
+3. Reciprocal Property: Because of the reflector and rotor mappings, the
+   same procedure is used for both encryption and decryption. Running the
+   ciphertext back through the machine with the same initial settings
+   recovers the original message.
 
-4. Security:
-   - The complex wiring of each rotor
-   - The continuously changing rotor positions
-   - The reflector ensuring reciprocal encryption
-   - The total number of possible settings (26³ = 17,576 positions)
+4. Input Handling: Spaces are removed before encryption. As a result,
+   decrypted output for phrases (e.g., "NEW YEAR") appears without spaces
+   ("NEWYEAR"), matching the machine’s internal processing.
+
+5. Security:
+   - The fixed but non-linear wiring of each rotor
+   - The changing rotor positions for every character
+   - The reflector guaranteeing reciprocal behavior
+   - The total number of initial settings (26³ = 17,576 positions)
     
           """)
 

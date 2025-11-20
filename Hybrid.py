@@ -1,7 +1,12 @@
-from rotorMachine import RotorMachine
+# CIIC 5018-050 - Cryptography and Network Security
+# Project - Hybrid Cryptosystem using Rotor Machine and DES Encryption
+# Task 3: Hybrid Cryptosystem
+# Authors: Christian Medina Diaz & Edjoel Colon Nogueras
+
+from RotorMachine import RotorMachine
 import DES
 
-# --- Rotor configuration (same as Task 1) ---
+# Rotor config (Task 1)
 ROTOR_I_WIRING   = "EKMFLGDQVZNTOWYHXUSPAIBRCJ"
 ROTOR_II_WIRING  = "AJDKSIRUXBLHWTMCQGZNPYFVOE"
 ROTOR_III_WIRING = "BDFHJLCPRTXVZNYEIWGAKMUSQO"
@@ -16,7 +21,7 @@ def build_rotor_machine():
     machine.set_positions(0, 0, 0)
     return machine
 
-# --- DES configuration (same key you used in Task 2) ---
+# DES config (Task 2)
 DES_KEY_HEX = "133457799BBCDFF1"
 DES_KEY = bytes.fromhex(DES_KEY_HEX)
 DES_SUBKEYS = DES.generate_subkeys(DES_KEY)
@@ -38,8 +43,7 @@ def des_decrypt_bytes(ciphertext: bytes) -> bytes:
         recovered += DES.des_block_decrypt(block, DES_SUBKEYS)
     return DES.unpad_pkcs5(recovered)
 
-# --- Hybrid operations ---
-
+# Hybrid ops
 def hybrid_encrypt(message: str):
     """
     Task 3 encryption:
@@ -79,11 +83,11 @@ def run_table3_tests():
         "WELCOME TO PUERTO RICO",
     ]
 
-    print("=" * 80)
-    print("Table 3: Documenting the results of hybrid cryptosystem")
-    print("=" * 80)
+    print("=" * 170)
+    print("Table 3: Documenting the results of Hybrid Cryptosystem")
+    print("=" * 170)
     print(f"{'M (Original)':<26} {'E1 (Rotor)':<26} {'E2 (DES hex)':<40} {'D1':<26} {'D2 (Final)':<26}")
-    print("-" * 80)
+    print("-" * 170)
 
     for M in messages:
         E1, E2 = hybrid_encrypt(M)
