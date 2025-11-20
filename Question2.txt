@@ -1,5 +1,6 @@
-Explain the decryption process in a rotor machine and why it works.
-How decryption works
+2. Discuss the process of decryption in a rotor machine. How does the structure of
+the machine ensure that decryption with the same rotor settings as encryption will
+return the original message?
 
 Rotor machines are designed using reversible electrical/mechanical wiring.
 The decryption process in a rotor machine is inherently ensured by the

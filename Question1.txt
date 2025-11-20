@@ -1,4 +1,4 @@
-1.How does the initial rotor position affect the encryption process? Provide examples
+1. How does the initial rotor position affect the encryption process? Provide examples
 to demonstrate how different initial rotor settings produce different ciphertexts for
 the same plaintext
 

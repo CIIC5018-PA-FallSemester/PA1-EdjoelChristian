@@ -1,4 +1,6 @@
-Why does DES use 16 Feistel rounds? What happens if fewer rounds are used?
+5. DES uses 16 Feistel rounds. Explain why multiple rounds of encryption (in this case,
+16) are necessary to create a secure cipher. What would happen if fewer rounds were
+used? Justify your response by considering few examples.
 
 DES utilizes 16 Feistel rounds because multiple rounds of encryption are 
 absolutely necessary to achieve a secure cipher by establishing sufficient 

@@ -1,4 +1,4 @@
-What is the role of padding in DES encryption? Why is padding necessary, and
+6. What is the role of padding in DES encryption? Why is padding necessary, and
 what padding schemes can be used? What are the potential issues that could 
 arise if padding is not handled correctly?
 

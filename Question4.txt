@@ -1,4 +1,4 @@
-Discuss the key schedule in DES. How are the 56-bit keys generated for each round
+4. Discuss the key schedule in DES. How are the 56-bit keys generated for each round
 of the encryption process? What effect does this have on the strength of the encryption?
 
 The key schedule in DES is the critical procedure that takes the initial 64-bit key and 

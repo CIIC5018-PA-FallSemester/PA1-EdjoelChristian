@@ -1,4 +1,7 @@
-Security impact of (1) same initial positions vs. (2) different positions
+3. Consider two scenarios: (1) Using the same initial rotor positions 
+for multiple messages and (2) Using different initial rotor positions 
+for each message. How do these scenarios impact the overall security 
+of the rotor machine encryption?
 
 Scenario 1 — Using the SAME initial rotor settings for every message
 

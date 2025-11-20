@@ -1,6 +1,6 @@
 # CIIC 5018-050 - Cryptography and Network Security
 # Project - Hybrid Cryptosystem using Rotor Machine and DES Encryption
-# Part 2: DES Implementation
+# Task 2: DES Implementation
 # On messages used in Task 1: "HELLO", "HOPE", "NEW YEAR"
 # Authors: Edjoel Colon Nogueras & Christian Medina Diaz
 
