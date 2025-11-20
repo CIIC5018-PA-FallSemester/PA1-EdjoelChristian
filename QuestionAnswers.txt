@@ -1,0 +1,79 @@
+CIIC 5018-050 Cryptography & Network Security
+Prof. Kumar Venkataramani
+Group 1: Edjoel Colon Nogueras & Christian Medina Díaz
+Project Assignment: Hybrid Cryptographic System
+
+Discussion Questions Answered
+
+1. How does the initial rotor position affect the encryption process? Provide examples to demonstrate how different initial rotor settings produce different ciphertexts for the same plaintext
+
+The rotor machine’s starting position functions as a core part of its key, because it sets the initial alignment of the internal rotor wiring. This alignment dictates which substitution mapping is applied to the very first plaintext character. In our implementation, beginning at the rotor setting AAA (0,0,0) produces the rotor-level ciphertext XNA SMT RTO when encrypting “HOW ARE YOU” If the starting point were changed to BAA (1,0,0), the first rotor would already be rotated by one step before any character is processed. As a result, the very first substitution would differ, and since the rotors advance as each character is encrypted, every subsequent mapping would shift as well. A seemingly minor adjustment to the initial rotor state therefore leads to an entirely different ciphertext for the same input message—demonstrating the machine’s strong dependence on its initial key configuration.
+
+2. Discuss the process of decryption in a rotor machine. How does the structure of the machine ensure that decryption with the same rotor settings as encryption will return the original message?
+
+Rotor machines operate using reversible electromechanical pathways, which naturally enable both encryption and decryption. This reversibility comes from the reciprocal signal flow created by the rotor stack and, most importantly, the reflector. When a letter—say M—is processed, the electrical signal passes through the rotors, reaches the reflector, and then is sent back through the same rotors but in the opposite direction. The reflector is wired so that any pairing is two-way: if it links A to P, it also links P back to A.
+Because the entire circuit is symmetric, the same machine settings automatically provide the inverse transformation. As long as the operator sets the rotors to the same starting position used during encryption, and the stepping occurs in the same sequence, feeding the ciphertext (e.g., E) back through the machine reverses each substitution in order. This mirrored processing reconstructs the original plaintext (M) without requiring a separate decryption algorithm.
+
+3. Consider two scenarios: (1) Using the same initial rotor positions for multiple messages and (2) Using different initial rotor positions for each message. How do these scenarios impact the overall security of the rotor machine encryption?
+
+Scenario 1 — Using the SAME initial rotor settings for every message
+
+Reusing the same starting rotor position (such as AAA) across several messages is a serious security mistake because it repeats the key material. When this happens, an attacker can place the resulting ciphertexts “in depth,” meaning they can line up multiple encrypted messages that were produced under identical rotor conditions. If the cryptanalyst manages to uncover the substitution pattern for the opening characters of one message, that knowledge immediately applies to the opening characters of every other message encoded with the same initial setting. Since all of the rotor stepping behavior repeats identically from message to message, the adversary effectively gains insight into the evolving substitution alphabets for the entire collection of intercepted texts, greatly simplifying message recovery.
+
+Scenario 2 — Using DIFFERENT initial settings for each message
+
+In contrast, assigning a fresh and unpredictable rotor starting position to every message is essential for maintaining strong security. Doing so makes each ciphertext behave as an independent substitution system with no correlation to the others. Even if an attacker manages to analyze or partially solve one encrypted message, that information does not reveal the initial rotor alignment or stepping pattern used for any different message. By varying the initial settings, the system fully leverages the available key space—both the 17,576 possible starting positions and the permutations of rotor order. As a result, every intercepted message must be attacked separately, dramatically increasing the cryptanalyst’s effort and reducing the likelihood of a successful break.
+
+4. Discuss the key schedule in DES. How are the 56-bit keys generated for each round of the encryption process? What effect does this have on the strength of the encryption?
+
+The DES key schedule is the mechanism that expands the original 64-bit key into the sixteen distinct 48-bit subkeys required for each Feistel round. The process starts by discarding the eight parity bits, leaving a 56-bit working key. This key is permuted through Permuted Choice 1 (PC-1) and then divided into two 28-bit components, labeled C₀ and D₀.
+For every encryption round, these halves undergo a left rotation—by one or two positions depending on the round number. This shifting pattern ensures that different combinations of the 56 available bits are brought into play over time. After shifting, the two halves are rejoined and processed by Permuted Choice 2 (PC-2), which extracts 48 bits to create the subkey Kᵢ for that round.
+This elaborate scheduling process is crucial to DES’s security. By generating a new subkey for each round and heavily permuting the key material, the algorithm introduces strong confusion and diffusion: minor changes in the master key propagate across many subkeys, and ultimately across many bits of the resulting ciphertext, making the cipher resistant to direct key-recovery attacks.
+
+5. DES uses 16 Feistel rounds. Explain why multiple rounds of encryption (in this case, 16) are necessary to create a secure cipher. What would happen if fewer rounds were used? Justify your response by considering few examples.
+
+DES relies on 16 Feistel rounds because a secure block cipher must repeatedly mix the data in order to destroy any recognizable structure between plaintext and ciphertext. If only a single round were used, very little spreading of information would occur: half of the plaintext would pass straight through, and the nonlinear S-boxes would influence the data only once. DES needs several rounds—typically five or six—before a one-bit change in the input begins to affect many output bits, but even that amount of mixing is inadequate against advanced analysis techniques.
+Research from the original IBM designers and later work by Biham and Shamir demonstrated the importance of using the full round count:
+•	DES variants with only 4–8 rounds can be defeated with differential cryptanalysis using as few as dozens or hundreds of chosen plaintexts.
+•	In contrast, the standard 16-round version requires around 2⁴⁷ chosen plaintexts, which was completely unrealistic for an attacker at the time of DES’s creation.
+Therefore, reducing the number of rounds—whether to 4, 6, or 8—creates statistical patterns that adversaries can exploit, severely weakening the cipher. The complete 16-round structure provides the necessary level of diffusion and nonlinearity, ensuring that ciphertext appears random and giving the algorithm the safety margin required for the hybrid cryptosystem in this project.
+
+6. What is the role of padding in DES encryption? Why is padding necessary, and what padding schemes can be used? What are the potential issues that could arise if padding is not handled correctly?
+
+Padding is required in DES and other block ciphers because they process data in fixed-size units—64 bits (8 bytes) in the case of DES. Real messages rarely align perfectly with this block size, so extra bytes must be appended to the final block to make it a full 8 bytes before encryption. A widely used approach is PKCS#5/PKCS#7 padding, where each added byte contains a value indicating how many padding bytes were inserted. For example, if three bytes are needed, the block is finished with 03 03 03.
+If padding is not implemented correctly, two types of problems can arise. At the simplest level, decryption may remove the wrong number of bytes, causing incorrect or corrupted output. More importantly, a flawed padding routine can open the door to a padding oracle attack. This type of vulnerability appears when the system reveals—through error messages, timing differences, or other side effects—whether the padding on a decrypted block is valid. An attacker can exploit this feedback to iteratively recover the plaintext, decrypting the ciphertext one block (and even one byte) at a time.
+
+7. Consider the computational performance of the hybrid cryptosystem with standalone rotor machine, and DES using the evaluation metrics such as computational complexity, resource utilized, and the total time taken and document the results in Table 4. Analyze the results by explaining the benefits, and limitations of hybrid cryptographic systems.
+
+TABLE 4: Comparing the performances of three different cryptographic systems
+Metric	Rotor Machine	DES	Hybrid Cryptosystem
+Computational Complexity	Very Low O(N)	Moderate/High O(Nx16)	High
+Computation Time	Very Fast	Slower	Slowest (Sequential Execution)
+Resource Utilized	Minimal (Low CPU)	High (CPU-intensive)	Highest (2 separate key scheduling & processing)
+
+When encrypting a .txt file, the hybrid cryptosystem demonstrates both clear advantages and notable limitations. The primary advantage lies in its layered security: an attacker must first overcome the Rotor Machine’s stream-like substitution and then break the 16-round DES block encryption to access the original file. This combination effectively removes predictable patterns from the initial rotor stage, ensuring strong diffusion throughout the entire file.
+The main drawback, however, is performance. Every byte of the file must first pass through the Rotor Machine, and the resulting intermediate ciphertext is subsequently processed by DES, which involves 16 rounds of computation. This two-step approach significantly increases encryption and decryption time compared to using DES alone. Additionally, despite the added complexity of the hybrid design, the system’s overall security is ultimately limited by DES’s 56-bit key. As a result, files encrypted in this manner remain susceptible to brute-force attacks using modern computing resources.
+
+8. Discuss the practicality of using a hybrid cryptosystem like Rotor Machine + DES in modern encryption applications. Could this approach be applied in real-world situations? If so, suggest few potential places where it can be applied.
+
+The Rotor Machine + DES hybrid model is largely impractical for contemporary encryption needs. Both components are considered outdated: the Rotor Machine does not meet modern cryptographic standards, and DES’s 56-bit key is too short to resist current brute-force attacks. Using this combination would be slow and insecure, especially when efficient, robust algorithms like AES (128-bit keys or higher) are widely available.
+Nevertheless, the underlying idea of a hybrid cryptosystem—layering multiple ciphers—is still relevant. In modern practice, this concept appears in the asymmetric/symmetric hybrid approach used in TLS/SSL. Here, a computationally intensive asymmetric cipher (e.g., RSA or ECC) securely exchanges a temporary symmetric key, which then encrypts the main data using a fast symmetric algorithm like AES. This design achieves both secure key establishment and high-performance encryption.
+Advantages of the Rotor + DES hybrid:
+•	Layered encryption complicates attacks.
+•	The rotor layer randomizes plaintext before DES, adding extra confusion.
+•	Partial compromise of DES would not reveal plaintext without the rotor layer.
+Disadvantages:
+•	Slower due to double encryption.
+•	Rotor machines are cryptographically insecure by modern standards.
+•	DES’s short 56-bit key makes it obsolete.
+•	Combining two weak systems does not approach the security of AES.
+Potential educational or low-security uses:
+•	Teaching the principles of layered encryption.
+•	Lightweight encryption in constrained embedded systems.
+•	Data obfuscation in low-risk applications.
+Not suitable for:
+•	Banking or financial transactions.
+•	Government or military communications.
+•	Internet security or sensitive personal data.
+Modern encryption systems rely on AES, RSA, and ECC rather than DES or mechanical rotor-based methods.
+
