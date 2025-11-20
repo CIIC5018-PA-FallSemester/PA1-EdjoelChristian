@@ -1,0 +1,102 @@
+# CIIC 5018-050 - Cryptography and Network Security
+# Project - Hybrid Cryptosystem using Rotor Machine and DES Encryption
+# Task 3: Hybrid Cryptosystem
+# Authors: Christian Medina Diaz & Edjoel Colon Nogueras
+
+from RotorMachine import RotorMachine
+import DES
+
+# Rotor config (Task 1)
+ROTOR_I_WIRING   = "EKMFLGDQVZNTOWYHXUSPAIBRCJ"
+ROTOR_II_WIRING  = "AJDKSIRUXBLHWTMCQGZNPYFVOE"
+ROTOR_III_WIRING = "BDFHJLCPRTXVZNYEIWGAKMUSQO"
+
+def build_rotor_machine():
+    """
+    Creates a rotor machine with the same wiring and
+    initial positions AAA used in Task 1.
+    """
+    machine = RotorMachine(ROTOR_I_WIRING, ROTOR_II_WIRING, ROTOR_III_WIRING)
+    # positions A A A  -> 0,0,0
+    machine.set_positions(0, 0, 0)
+    return machine
+
+# DES config (Task 2)
+DES_KEY_HEX = "133457799BBCDFF1"
+DES_KEY = bytes.fromhex(DES_KEY_HEX)
+DES_SUBKEYS = DES.generate_subkeys(DES_KEY)
+
+def des_encrypt_bytes(data: bytes) -> bytes:
+    """Encrypts arbitrary-length bytes with DES in ECB, using PKCS#5 padding."""
+    padded = DES.pad_pkcs5(data)
+    ct = b""
+    for i in range(0, len(padded), 8):
+        block = padded[i:i+8]
+        ct += DES.des_block_encrypt(block, DES_SUBKEYS)
+    return ct
+
+def des_decrypt_bytes(ciphertext: bytes) -> bytes:
+    """Inverse of des_encrypt_bytes."""
+    recovered = b""
+    for i in range(0, len(ciphertext), 8):
+        block = ciphertext[i:i+8]
+        recovered += DES.des_block_decrypt(block, DES_SUBKEYS)
+    return DES.unpad_pkcs5(recovered)
+
+# Hybrid ops
+def hybrid_encrypt(message: str):
+    """
+    Task 3 encryption:
+        E1 = RotorEncrypt(M)
+        E2 = DESEncrypt(E1)
+    Returns (E1_str, E2_bytes).
+    """
+    machine = build_rotor_machine()
+
+    # Layer 1: rotor machine (keeps spaces, only letters are rotated)
+    E1 = machine.encrypt(message)
+
+    # Layer 2: DES on the rotor output (as ASCII bytes)
+    E2 = des_encrypt_bytes(E1.encode("ascii"))
+    return E1, E2
+
+def hybrid_decrypt(E2: bytes):
+    """
+    Task 3 decryption:
+        D1 = DESDecrypt(E2)   (should equal E1)
+        D2 = RotorDecrypt(D1) (should equal original M)
+    Returns (D1_str, D2_str).
+    """
+    # First remove DES
+    D1_bytes = des_decrypt_bytes(E2)
+    D1 = D1_bytes.decode("ascii")
+
+    # Then remove rotor layer
+    machine = build_rotor_machine()
+    D2 = machine.decrypt(D1)
+    return D1, D2
+
+def run_table3_tests():
+    messages = [
+        "HOW ARE YOU",
+        "HAPPY NEW YEAR",
+        "WELCOME TO PUERTO RICO",
+    ]
+
+    print("=" * 170)
+    print("Table 3: Documenting the results of Hybrid Cryptosystem")
+    print("=" * 170)
+    print(f"{'M (Original)':<26} {'E1 (Rotor)':<26} {'E2 (DES hex)':<40} {'D1':<26} {'D2 (Final)':<26}")
+    print("-" * 170)
+
+    for M in messages:
+        E1, E2 = hybrid_encrypt(M)
+        D1, D2 = hybrid_decrypt(E2)
+
+        # hex string for E2 so it fits nicely in the table
+        E2_hex = E2.hex().upper()
+
+        print(f"{M:<26} {E1:<26} {E2_hex:<40} {D1:<26} {D2:<26}")
+
+if __name__ == "__main__":
+    run_table3_tests()
